@@ -1,16 +1,15 @@
 "use strict";
 
 const File = use("App/Models/File");
-const Helpers = use("Helpers");
 
 class FileController {
-  async store({ request, response }) {
-    await File.create({
-      description: description
-    });
-  }
+  async show({ params }) {
+    const files = await File.query()
+      .where("user_id", params.id)
+      .fetch();
 
-  async show({ params, response }) {}
+    return files;
+  }
 }
 
 module.exports = FileController;
