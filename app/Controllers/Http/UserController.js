@@ -40,18 +40,28 @@ class UserController {
         .send({ error: { message: "Esse usuário já possui conta" } });
     }
 
-    const files = [
-      {
-        description: "documento 1"
-      },
-      {
-        description: "documento 2"
-      }
-    ];
-
     const trx = await Database.beginTransaction();
 
+  
     const user = await User.create(data);
+
+    const files = [
+      {
+        description: "Foto do rosta da frente"
+      },
+      {
+        description: "Documento com foto (RG apenas frete ou CNH aberto)"
+      },
+      {
+        description: "Foto RG verso(não obrigatório em caso de envio da CNH)"
+      },
+      {
+        description: "Comprovante de residência"
+      },
+      {
+        description: "Comprovante de renda"
+      }
+    ];
 
     await user.files().createMany(files, trx);
 
