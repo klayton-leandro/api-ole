@@ -4,4 +4,5 @@ const Route = use("Route");
 
 Route.post("users", "UserController.store");
 Route.post("sessions", "SessionController.store");
-Route.post("files/:id", "FileController.show");
+
+Route.get("users/:id/files", "FileController.show");
