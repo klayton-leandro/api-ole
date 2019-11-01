@@ -7,19 +7,20 @@ class FileController {
   async index({ auth }) {
     const user = await auth.getUser();
     const files = await File.query()
+      .orderBy("id", "asc")
       .where("user_id", user.id)
       .fetch();
-
     return files;
   }
 
   async update({ response, request, params }) {
     try {
       // 1 - verifica a existência de uma arquivo file
+
       if (!request.file("file")) return;
 
       // define configurações do arquivo
-      const upload = request.file("file", { size: "2mb" });
+      const upload = request.file("file", { size: "5mb" });
 
       // define nome do arquivo
       const fileName = `${Date.now()}.${upload.subtype}`;
