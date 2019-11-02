@@ -7,7 +7,10 @@ Route.post("sessions", "SessionController.store");
 
 Route.get("files/:id", "FileController.show");
 
+Route.get("users", "UserController.index");
+
 Route.group(() => {
   Route.get("files", "FileController.index");
+  Route.get("users/:id/files", "FileController.index");
   Route.put("files/:id", "FileController.update");
 }).middleware(["auth"]);

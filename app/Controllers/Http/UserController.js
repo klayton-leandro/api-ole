@@ -4,6 +4,13 @@ const User = use("App/Models/User");
 const Database = use("Database");
 
 class UserController {
+  async index({ request }) {
+    const { page } = request.get();
+    const users = await User.query().paginate(page);
+
+    return users;
+  }
+
   async store({ request, response }) {
     const { email, username, cpf } = request.all();
 
@@ -42,24 +49,28 @@ class UserController {
 
     const trx = await Database.beginTransaction();
 
-  
     const user = await User.create(data);
 
     const files = [
       {
-        description: "Foto do rosta da frente"
+        description: "Foto do rosta da frente",
+        icon: "smile"
       },
       {
-        description: "Documento com foto (RG apenas frete ou CNH aberto)"
+        description: "Documento com foto (RG apenas frete ou CNH aberto)",
+        icon: "rg_frente"
       },
       {
-        description: "Foto RG verso(não obrigatório em caso de envio da CNH)"
+        description: "Foto RG verso(não obrigatório em caso de envio da CNH)",
+        icon: "rg_verso"
       },
       {
-        description: "Comprovante de residência"
+        description: "Comprovante de residência",
+        icon: "home"
       },
       {
-        description: "Comprovante de renda"
+        description: "Comprovante de renda",
+        icon: "dollar-sign"
       }
     ];
 

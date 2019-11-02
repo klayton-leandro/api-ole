@@ -13,6 +13,7 @@ class FileSchema extends Schema {
       table.string("subtype", 20);
       table.string("description", 200);
       table.boolean("checked").defaultTo(false);
+      table.string("icon");
       table.string("message", 200);
       table
         .integer("user_id")

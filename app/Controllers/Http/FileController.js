@@ -4,11 +4,11 @@ const File = use("App/Models/File");
 const Helpers = use("Helpers");
 
 class FileController {
-  async index({ auth }) {
+  async index({ params, auth }) {
     const user = await auth.getUser();
     const files = await File.query()
       .orderBy("id", "asc")
-      .where("user_id", user.id)
+      .where("user_id", params.id || user.id)
       .fetch();
     return files;
   }
