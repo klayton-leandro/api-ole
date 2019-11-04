@@ -4,7 +4,10 @@ const File = use("App/Models/File");
 const Helpers = use("Helpers");
 
 class FileController {
-  async index({ params, auth }) {
+  async index({
+    params,
+    auth
+  }) {
     const user = await auth.getUser();
     const files = await File.query()
       .orderBy("id", "asc")
@@ -13,33 +16,17 @@ class FileController {
     return files;
   }
 
-  async update({ response, request, params }) {
-    try {
-      // 1 - verifica a existência de uma arquivo file
+  async update({
+    response,
+    request,
+    params
+  }) {
 
-      if (!request.file("file")) return;
+    // 1 - verifica a existência de uma arquivo file
 
-      // define configurações do arquivo
-      const upload = request.file("file", { size: "5mb" });
+    if (!request.file("file")) {
 
-      // define nome do arquivo
-      const fileName = `${Date.now()}.${upload.subtype}`;
-
-      // move o arquivo para uma pasta
-      await upload.move(Helpers.tmpPath("uploads"), {
-        name: fileName
-      });
-
-      if (!upload.moved()) {
-        return upload.error();
-      }
-
-      const data = {
-        file: fileName,
-        name: upload.clientName,
-        type: upload.type,
-        subtype: upload.subtype
-      };
+      const data = request.only(["message"]);
 
       const file = await File.find(params.id);
 
@@ -47,15 +34,57 @@ class FileController {
 
       await file.save();
 
-      return file;
-    } catch (error) {
-      return response
-        .status(error.status)
-        .send({ error: { message: "Erro no upload de arquivo" } });
+    } else {
+
+      try {
+        // define configurações do arquivo
+        const upload = request.file("file", {
+          size: "5mb"
+        });
+
+        // define nome do arquivo
+        const fileName = `${Date.now()}.${upload.subtype}`;
+
+        // move o arquivo para uma pasta
+        await upload.move(Helpers.tmpPath("uploads"), {
+          name: fileName
+        });
+
+        if (!upload.moved()) {
+          return upload.error();
+        }
+
+        const data = {
+          file: fileName,
+          name: upload.clientName,
+          type: upload.type,
+          subtype: upload.subtype
+        };
+
+        const file = await File.find(params.id);
+
+        file.merge(data);
+
+        await file.save();
+
+        return file;
+      } catch (error) {
+        return response
+          .status(error.status)
+          .send({
+            error: {
+              message: "Erro no upload de arquivo"
+            }
+          });
+      }
     }
+
   }
 
-  async show({ params, response }) {
+  async show({
+    params,
+    response
+  }) {
     try {
       const file = await File.findOrFail(params.id);
 
@@ -65,7 +94,11 @@ class FileController {
     } catch (error) {
       return response
         .status(error.status)
-        .send({ error: { message: "Arquivo não existe" } });
+        .send({
+          error: {
+            message: "Arquivo não existe"
+          }
+        });
     }
   }
 }
