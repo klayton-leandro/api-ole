@@ -16,24 +16,55 @@ class FileController {
     return files;
   }
 
+
+  async status({
+    request,
+    params
+  }) {
+    try {
+      const data = request.only(["checked"]);
+
+      const file = await File.findOrFail(params.id);
+
+      file.merge(data);
+
+      await file.save();
+    } catch (error) {
+      return response
+        .status(error.status)
+        .send({
+          error: {
+            message: "Arquivo não existe"
+          }
+        });
+    }
+  }
+
   async update({
     response,
     request,
     params
   }) {
-
     // 1 - verifica a existência de uma arquivo file
 
     if (!request.file("file")) {
+      try {
+        const data = request.only(["message"]);
 
-      const data = request.only(["message"]);
+        const file = await File.findOrFail(params.id);
 
-      const file = await File.find(params.id);
+        file.merge(data);
 
-      file.merge(data);
-
-      await file.save();
-
+        await file.save();
+      } catch (error) {
+        return response
+          .status(error.status)
+          .send({
+            error: {
+              message: "Arquivo não existe"
+            }
+          });
+      }
     } else {
 
       try {

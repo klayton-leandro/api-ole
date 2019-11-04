@@ -13,4 +13,6 @@ Route.group(() => {
   Route.get("files", "FileController.index");
   Route.get("users/:id/files", "FileController.index");
   Route.put("files/:id", "FileController.update");
+
+  Route.put("files/:id/status", "FileController.status");
 }).middleware(["auth"]);
