@@ -80,6 +80,23 @@ class UserController {
 
     return user;
   }
+
+  async update({ params, request, response }) {
+    try {
+      const user = await User.findOrFail(params.id);
+      const data = await request.only(["name", "password", "phone", "email"]);
+
+      user.merge(data);
+
+      await user.save();
+
+      return user;
+    } catch (error) {
+      return response
+        .status(error.status)
+        .send({ error: { message: "Usuário nao encontrado" } });
+    }
+  }
 }
 
 module.exports = UserController;
