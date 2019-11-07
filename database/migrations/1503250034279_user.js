@@ -19,6 +19,7 @@ class UserSchema extends Schema {
         .unique();
       table.string("cpf").notNullable();
       table.string("phone").notNullable();
+      table.boolean("admin").defaultTo(false);
       table.timestamps();
     });
   }

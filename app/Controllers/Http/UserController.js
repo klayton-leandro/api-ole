@@ -5,13 +5,33 @@ const Database = use("Database");
 
 class UserController {
   async index({ request }) {
+    const query = request.get();
+
+    const cpf = query.cpf || "";
+
     const { page } = request.get();
-    const users = await User.query().paginate(page);
+    const users = await User.query()
+      .where("admin", false)
+      .where("cpf", "LIKE", "%" + cpf + "%")
+      .paginate(page);
 
     return users;
   }
 
+  async show({ request, auth }) {
+    const currentUser = await auth.getUser();
+    const user = await User.find(currentUser.id);
+
+    return user;
+  }
+
   async store({ request, response }) {
+    const adminExists = await Database.from("users")
+      .where("admin", true)
+      .count();
+
+    console.log(adminExists[0]["count"]);
+
     const { email, username, cpf } = request.all();
 
     const data = request.only([
@@ -81,12 +101,44 @@ class UserController {
     return user;
   }
 
-  async update({ params, request, response }) {
+  async admin({ request, response }) {
+    const adminExists = await Database.from("users")
+      .where("admin", true)
+      .count();
+
+    if (adminExists[0]["count"] == 0) {
+      const data = request.only([
+        "username",
+        "email",
+        "password",
+        "name",
+        "phone",
+        "cpf"
+      ]);
+
+      const user = await User.create({ ...data, admin: true });
+
+      return user;
+    } else {
+      return response
+        .status(400)
+        .send({ error: { message: "Usuário admin já cadastrado" } });
+    }
+  }
+
+  async update({ request, response, auth }) {
+    const currentUser = await auth.getUser();
+
     try {
-      const user = await User.findOrFail(params.id);
+      const user = await User.findOrFail(currentUser.id);
       const data = await request.only(["name", "password", "phone", "email"]);
 
-      user.merge(data);
+      if (data.password) {
+        user.merge(data);
+      } else {
+        const { name, phone, email } = data;
+        user.merge({ name, phone, email });
+      }
 
       await user.save();
 

@@ -4,10 +4,7 @@ const File = use("App/Models/File");
 const Helpers = use("Helpers");
 
 class FileController {
-  async index({
-    params,
-    auth
-  }) {
+  async index({ params, auth }) {
     const user = await auth.getUser();
     const files = await File.query()
       .orderBy("id", "asc")
@@ -16,11 +13,7 @@ class FileController {
     return files;
   }
 
-
-  async status({
-    request,
-    params
-  }) {
+  async status({ request, params }) {
     try {
       const data = request.only(["checked"]);
 
@@ -30,21 +23,15 @@ class FileController {
 
       await file.save();
     } catch (error) {
-      return response
-        .status(error.status)
-        .send({
-          error: {
-            message: "Arquivo não existe"
-          }
-        });
+      return response.status(error.status).send({
+        error: {
+          message: "Arquivo não existe"
+        }
+      });
     }
   }
 
-  async update({
-    response,
-    request,
-    params
-  }) {
+  async update({ response, request, params }) {
     // 1 - verifica a existência de uma arquivo file
 
     if (!request.file("file")) {
@@ -57,16 +44,13 @@ class FileController {
 
         await file.save();
       } catch (error) {
-        return response
-          .status(error.status)
-          .send({
-            error: {
-              message: "Arquivo não existe"
-            }
-          });
+        return response.status(error.status).send({
+          error: {
+            message: "Arquivo não existe"
+          }
+        });
       }
     } else {
-
       try {
         // define configurações do arquivo
         const upload = request.file("file", {
@@ -100,22 +84,16 @@ class FileController {
 
         return file;
       } catch (error) {
-        return response
-          .status(error.status)
-          .send({
-            error: {
-              message: "Erro no upload de arquivo"
-            }
-          });
+        return response.status(error.status).send({
+          error: {
+            message: "Erro no upload de arquivo"
+          }
+        });
       }
     }
-
   }
 
-  async show({
-    params,
-    response
-  }) {
+  async show({ params, response }) {
     try {
       const file = await File.findOrFail(params.id);
 
@@ -123,13 +101,11 @@ class FileController {
         return response.download(Helpers.tmpPath(`uploads/${file.file}`));
       }
     } catch (error) {
-      return response
-        .status(error.status)
-        .send({
-          error: {
-            message: "Arquivo não existe"
-          }
-        });
+      return response.status(error.status).send({
+        error: {
+          message: "Arquivo não existe"
+        }
+      });
     }
   }
 }
