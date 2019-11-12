@@ -1,12 +1,25 @@
 "use strict";
 
+const User = use("App/Models/User");
+
 class SessionController {
   async store({ request, auth }) {
-    const { username, password } = request.all();
+    const { cpf, password } = request.all();
 
-    const token = await auth.attempt(username, password);
+    const token = await auth.attempt(cpf, password);
 
-    return token;
+    const user = await User.findBy("cpf", cpf);
+
+    const data = {
+      user: {
+        admin: user.admin,
+        name: user.name,
+        collaborator: user.collaborator,
+      },
+      ...token
+    }
+    
+    return data;
   }
 }
 
