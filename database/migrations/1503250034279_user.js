@@ -20,10 +20,11 @@ class UserSchema extends Schema {
       table.string("cpf").notNullable();
       table.string("phone").notNullable();
       table.boolean("admin").defaultTo(false);
+      table.boolean("collaborator").defaultTo(false);
       table.timestamps();
     });
   }
-
+  
   down() {
     this.drop("users");
   }
