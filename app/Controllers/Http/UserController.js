@@ -40,7 +40,8 @@ class UserController {
       "password",
       "name",
       "phone",
-      "cpf"
+      "cpf",
+      "collaborator"
     ]);
 
     const emailExists = await User.findBy("email", email);
@@ -69,7 +70,7 @@ class UserController {
 
     const trx = await Database.beginTransaction();
 
-    const user = await User.create(data);
+    const user = await User.create({data});
 
     const files = [
       {
@@ -91,8 +92,18 @@ class UserController {
       {
         description: "Comprovante de renda",
         icon: "dollar-sign"
+      },
+      {
+        description: "Extrato Bancário",
+        icon: "insert-drive-file"
+      },
+      {
+        description: "Outros",
+        icon: "folder-open"
       }
     ];
+
+  
 
     await user.files().createMany(files, trx);
 
