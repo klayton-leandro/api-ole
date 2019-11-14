@@ -21,6 +21,10 @@ class User extends Model {
     return this.hasMany("App/Models/File");
   }
 
+  fileOlds() {
+    return this.hasMany("App/Models/FileOld");
+  }
+
   tokens() {
     return this.hasMany("App/Models/Token");
   }

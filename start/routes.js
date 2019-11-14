@@ -14,6 +14,7 @@ Route.group(() => {
   Route.get("files", "FileController.index");
   Route.get("user", "UserController.show");
   Route.get("users/:id/files", "FileController.index");
+  Route.get("users/:id/oldFiles", "FileOldController.index");
 
   Route.put("files/:id", "FileController.update");
 

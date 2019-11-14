@@ -31,7 +31,10 @@ class FileController {
     }
   }
 
-  async update({ response, request, params }) {
+  async update({ response, request, params, auth }) {
+
+    const user = await auth.getUser();
+
     // 1 - verifica a existência de uma arquivo file
 
     if (!request.file("file")) {
@@ -77,6 +80,22 @@ class FileController {
         };
 
         const file = await File.find(params.id);
+     
+
+        if(file.file) {
+        const oldFiles = await user.fileOlds().createMany([
+            {
+              file: file.file,
+              name: file.name,
+              type: file.type,
+              subtype: file.subtype,
+              description: file.description,
+              checked: file.checked,
+              icon: file.icon,
+              message: file.message
+            }
+          ])
+        }
 
         file.merge(data);
 
