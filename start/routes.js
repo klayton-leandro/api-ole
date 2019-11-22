@@ -7,6 +7,7 @@ Route.post("admin", "UserController.admin");
 Route.post("sessions", "SessionController.store");
 
 Route.get("files/:id", "FileController.show");
+Route.get("filesOld/:id", "FileOldController.show");
 
 Route.get("users", "UserController.index");
 

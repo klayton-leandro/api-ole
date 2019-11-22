@@ -32,10 +32,9 @@ class UserController {
 
     console.log(adminExists[0]["count"]);
 
-    const { email, username, cpf } = request.all();
+    const { email, cpf } = request.all();
 
     const data = request.only([
-      "username",
       "email",
       "password",
       "name",
@@ -60,17 +59,10 @@ class UserController {
         .send({ error: { message: "Esse CPF já possui conta" } });
     }
 
-    const usernameExists = await User.findBy("username", username);
-
-    if (usernameExists) {
-      return response
-        .status(400)
-        .send({ error: { message: "Esse usuário já possui conta" } });
-    }
 
     const trx = await Database.beginTransaction();
 
-    const user = await User.create({data});
+    const user = await User.create(data);
 
     const files = [
       {
@@ -103,8 +95,6 @@ class UserController {
       }
     ];
 
-  
-
     await user.files().createMany(files, trx);
 
     await trx.commit();
@@ -119,7 +109,6 @@ class UserController {
 
     if (adminExists[0]["count"] == 0) {
       const data = request.only([
-        "username",
         "email",
         "password",
         "name",
@@ -136,8 +125,7 @@ class UserController {
         .send({ error: { message: "Usuário admin já cadastrado" } });
     }
   }
-
-  async update({ request, response, auth }) {
+    async update({ request, response, auth }) {
     const currentUser = await auth.getUser();
 
     try {
