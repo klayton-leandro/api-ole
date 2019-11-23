@@ -55,7 +55,7 @@ module.exports = {
     | values. Read documentation for that.
     |
     */
-    trustProxy: false,
+    trustProxy: true,
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ module.exports = {
     | virk.cheatsheet.adonisjs.com - offset - 3
     |
     */
-    subdomainOffset: 2,
+    subdomainOffset: 3,
 
     /*
     |--------------------------------------------------------------------------
