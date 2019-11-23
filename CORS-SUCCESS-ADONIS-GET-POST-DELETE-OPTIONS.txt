@@ -19,7 +19,8 @@
 # Default server configuration
 #
 server {
-
+	
+	client_max_body_size 100M;
 	# SSL configuration
 	#
 	# listen 443 ssl default_server;
@@ -103,7 +104,7 @@ server {
 
 	      if ($request_method = 'PUT') {
 
-	       
+
 	        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
 	        add_header 'Access-Control-Allow-Headers' 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With Access-Control-Request-Headers';
 
@@ -174,6 +175,7 @@ server {
 #}
 
 server {
+ 	client_max_body_size 100M;
     if ($host = www.api-serversind.com) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
